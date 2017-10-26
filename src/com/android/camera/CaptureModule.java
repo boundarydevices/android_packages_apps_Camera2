@@ -321,6 +321,9 @@ public class CaptureModule extends CameraModule implements
     /** Handler thread for camera-related operations. */
     private Handler mCameraHandler;
 
+    /** Front camera support varaible */
+    private boolean mFrontCameraSupported;
+
     /** Current display rotation in degrees. */
     private int mDisplayRotation;
     /** Current screen width in pixels. */
@@ -411,6 +414,7 @@ public class CaptureModule extends CameraModule implements
         } catch (OneCameraException e) {
             Log.e(TAG, "Unable to provide a OneCameraManager. ", e);
         }
+        mFrontCameraSupported = mOneCameraManager.hasCameraFacing(Facing.FRONT);
         mDisplayRotation = CameraUtil.getDisplayRotation();
         mCameraFacing = getFacingFromCameraId(
               mSettingsManager.getInteger(mAppController.getModuleScope(), Keys.KEY_CAMERA_ID));
@@ -773,7 +777,7 @@ public class CaptureModule extends CameraModule implements
         return new HardwareSpec() {
             @Override
             public boolean isFrontCameraSupported() {
-                return mOneCameraManager.hasCameraFacing(Facing.FRONT);
+                return mFrontCameraSupported;
             }
 
             @Override
