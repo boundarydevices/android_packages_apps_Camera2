@@ -20,6 +20,7 @@ import static com.android.camera.one.v2.core.ResponseListeners.forFrameExposure;
 
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CaptureRequest;
 
 import com.android.camera.async.BufferQueue;
 import com.android.camera.async.Updatable;
@@ -70,6 +71,9 @@ class SimpleImageCaptureCommand implements ImageCaptureCommand {
             photoRequest.addResponseListener(metadataFuture);
             photoRequest.addResponseListener(forFrameExposure(imageExposureUpdatable));
             photoRequest.addResponseListener(forFrameExposure(exposureLatch));
+            // Fix AF Mode request not to cancel current setting
+            photoRequest.setParam(CaptureRequest.CONTROL_AF_MODE,
+                    CaptureRequest.CONTROL_AF_MODE_AUTO);
             session.submitRequest(Arrays.asList(photoRequest.build()),
                     FrameServer.RequestType.NON_REPEATING);
 
